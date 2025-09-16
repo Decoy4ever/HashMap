@@ -1,35 +1,3 @@
-// class Node{
-//     constructor(data = null, next = null){
-//         this.data = data
-//         this.next = next
-//     }
-// }
-
-// class LinkList{
-//     constructor(){
-//         this.head = null
-//     }
-
-//     append(value){
-//         let node = new Node(value)
-//         if(this.head === null){
-//             this.head = node
-//             return this.head;
-//         }
-
-//         let current = this.head 
-//         while(current.next !== null){
-
-//             // traverse through link list
-//             current = current.next 
-//         }
-
-//         current.next = node
-//         return this.head
-//     }
-// }
-
-
 class HashMap{
 
     constructor(size = 16){
@@ -103,24 +71,49 @@ class HashMap{
         // if the bucket at the index/hashCode is not empty 
         }else{
             console.log(`Collision occurs at index: ${index}`)
+            for(let [_,hashVal] of Object.entries(this.buckets[index])){
 
-            for(let [_,obj] of Object.entries(this.buckets[index])){
-
-                // if current key is the same as the new key inserted
-                if(obj.key === key){
-                    // update the value
-                    obj.value = value
-                    return this.buckets
-                }else{
+                // current key is the same as the inserted new key update the value
+                // if not push the (key,value) onto the array 
+                if(hashVal.key === key && hashVal.value !== value){
+                    hashVal.value = value
+                }else if(hashVal.key !== key && hashVal.value !== value){
                     this.numOfCollisions++
-                    // append the new (key,value)
                     this.buckets[index].push({key,value})
-                    return this.buckets
+                }else{
+                    return;
                 }
             }
+        }
+    }
 
+    /**
+     * `get(key)`
+     * takes one argument as a key and 
+     * returns the value that is assigned to this key. 
+     * If a key is not found, return null
+     */
+    get(key){
+
+        let index = this.hash(key)
+
+        // if there is no hash code return null
+        if(!index){
+            return null
         }
 
+        for(let [hashcode,hashVal] of Object.entries(this.buckets)){
+
+            // console.log(index === Number(hashcode))
+            if(Number(hashcode) === index){
+                for(const [k,v] of Object.entries(hashVal)){
+                    console.log(v)
+                    if(v.key === key){
+                        return v.value
+                    }
+                }
+            }
+        }
     }
 
 }
@@ -131,30 +124,38 @@ let bucketArr = new HashMap()
 // test 1 updating the value if the two keys are the same
 bucketArr.set(`apple`,`green`)
 bucketArr.set(`apple`,`red`)
+bucketArr.set(`apple`,`blue`)
+
 
 // test 2 checking if a collision occurs and starts chaining objects 
 bucketArr.set('elephant', 'gray')
 bucketArr.set('raaS', 'purple')
+bucketArr.set('elephant', 'gray')
 
 
 // test 3 checking correctly adds new key,value to the bucket array
-// bucketArr.set('banana', 'yellow')
-bucketArr.set('elephant', 'gray')
+bucketArr.set('banana', 'yellow')
+bucketArr.set('carrot', 'orange')
+bucketArr.set('dog', 'brown')
+bucketArr.set('frog', 'green')
+bucketArr.set('grape', 'purple')
+bucketArr.set('hat', 'black')
+bucketArr.set('ice cream', 'white')
+bucketArr.set('jacket', 'blue')
+bucketArr.set('kite', 'pink')
+bucketArr.set('lion', 'golden')
 
-// bucketArr.set('carrot', 'orange')
-// bucketArr.set('dog', 'brown')
-// bucketArr.set('frog', 'green')
-// bucketArr.set('grape', 'purple')
-// bucketArr.set('hat', 'black')
-// bucketArr.set('ice cream', 'white')
-// bucketArr.set('jacket', 'blue')
-// bucketArr.set('kite', 'pink')
-// bucketArr.set('lion', 'golden')
+
+let getVal = bucketArr.get("lina")
+console.log(`value is: ${getVal}`)
+console.log(`\n`)
+let getVal2 = bucketArr.get("raaS")
+console.log(`value is: ${getVal2}`)
+
 
 console.log("Num of buckets occupied: " + bucketArr.numOfHashKeys)
 console.log("Num of collisions: " + bucketArr.numOfCollisions)
 console.log(bucketArr.getLoadFactor())
-
 console.log(bucketArr.buckets)
 
 
