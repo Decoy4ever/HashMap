@@ -104,7 +104,6 @@ class HashMap{
 
         for(let [hashcode,hashVal] of Object.entries(this.buckets)){
 
-            // console.log(index === Number(hashcode))
             if(Number(hashcode) === index){
                 for(const [k,v] of Object.entries(hashVal)){
                     console.log(v)
@@ -113,6 +112,16 @@ class HashMap{
                     }
                 }
             }
+        }
+    }
+
+    has(key){
+        // find the hash code/index in the buckets array
+        let index = this.hash(key)
+
+        // loop inside array[index] and find if key exists
+        for(const [k,v] of Object.entries(this.buckets[index])){
+            return v.key === key ? true : false
         }
     }
 
@@ -128,35 +137,44 @@ bucketArr.set(`apple`,`blue`)
 
 
 // test 2 checking if a collision occurs and starts chaining objects 
-bucketArr.set('elephant', 'gray')
-bucketArr.set('raaS', 'purple')
-bucketArr.set('elephant', 'gray')
+// bucketArr.set('elephant', 'gray')
+// bucketArr.set('raaS', 'purple')
+// bucketArr.set('elephant', 'gray')
 
 
 // test 3 checking correctly adds new key,value to the bucket array
-bucketArr.set('banana', 'yellow')
-bucketArr.set('carrot', 'orange')
-bucketArr.set('dog', 'brown')
-bucketArr.set('frog', 'green')
-bucketArr.set('grape', 'purple')
-bucketArr.set('hat', 'black')
-bucketArr.set('ice cream', 'white')
-bucketArr.set('jacket', 'blue')
-bucketArr.set('kite', 'pink')
-bucketArr.set('lion', 'golden')
+// bucketArr.set('banana', 'yellow')
+// bucketArr.set('carrot', 'orange')
+// bucketArr.set('dog', 'brown')
+// bucketArr.set('frog', 'green')
+// bucketArr.set('grape', 'purple')
+// bucketArr.set('hat', 'black')
+// bucketArr.set('ice cream', 'white')
+// bucketArr.set('jacket', 'blue')
+// bucketArr.set('kite', 'pink')
+// bucketArr.set('lion', 'golden')
+
+// test 4 checking if `get(key)` returns the value
+// let getVal = bucketArr.get("lina")
+// console.log(`value is: ${getVal}`)
+// console.log(`\n`)
+// let getVal2 = bucketArr.get("raaS")
+// console.log(`value is: ${getVal2}`)
 
 
-let getVal = bucketArr.get("lina")
-console.log(`value is: ${getVal}`)
-console.log(`\n`)
-let getVal2 = bucketArr.get("raaS")
-console.log(`value is: ${getVal2}`)
+// test 5 checking if key exists using the `has(key)` 
+let has1 = bucketArr.has("apple")
+let has2 = bucketArr.has("pineapple")
+
+console.log(has1)
+console.log(has2)
 
 
-console.log("Num of buckets occupied: " + bucketArr.numOfHashKeys)
-console.log("Num of collisions: " + bucketArr.numOfCollisions)
-console.log(bucketArr.getLoadFactor())
+// console.log("Num of buckets occupied: " + bucketArr.numOfHashKeys)
+// console.log("Num of collisions: " + bucketArr.numOfCollisions)
+// console.log(bucketArr.getLoadFactor())
 console.log(bucketArr.buckets)
+
 
 
 
