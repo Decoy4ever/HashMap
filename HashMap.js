@@ -36,6 +36,22 @@ class HashMap{
         return keyArr
     }
 
+    values(){
+        let currentBucketArr = this.buckets
+        let valueArr = []
+        
+        // remove all buckets that have null in the bucketArr
+        let bucketHasHash = currentBucketArr.filter((obj) => obj !== null)
+
+        // iterate through the buckets to find the hash keys
+        for(let bucket of bucketHasHash){
+            for(let obj of bucket){
+                valueArr.push(obj.value)
+            }
+        }
+        return valueArr 
+    }
+
     hash(key){
 
         let hashCode = 0
@@ -224,6 +240,8 @@ bucketArr.set('lion', 'golden')
 // console.log("Num of collisions: " + bucketArr.numOfCollisions)
 // console.log(bucketArr.getLoadFactor())
 console.log(bucketArr.keys())
+console.log(bucketArr.values())
+
 
 console.log(bucketArr.length())
 
