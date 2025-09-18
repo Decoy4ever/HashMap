@@ -20,10 +20,25 @@ class HashMap{
         return this.numOfHashKeys
     }
 
+    keys(){
+        let currentBucketArr = this.buckets
+        let keyArr = []
+        
+        // remove all buckets that have null in the bucketArr
+        let bucketHasHash = currentBucketArr.filter((obj) => obj !== null)
+
+        // iterate through the buckets to find the hash keys
+        for(let bucket of bucketHasHash){
+            for(let obj of bucket){
+                keyArr.push(obj.key)
+            }
+        }
+        return keyArr
+    }
+
     hash(key){
 
         let hashCode = 0
-
         // primeNum use to avoid possible collisions
         let primeNum = 31
 
@@ -44,8 +59,8 @@ class HashMap{
  
         // find the hashCode
         let index = this.hash(key)
-        this.checkErrorBounds(index)   
 
+        this.checkErrorBounds(index)   
         console.log(`Inserting the "(key : ${key}, value: ${value})" at index : ${index}`)
 
         // create a array of (key,value) objects
@@ -54,10 +69,9 @@ class HashMap{
         // if bucket at the index/hashCode is empty
         if(this.buckets[index] === null){
             console.log(`No collisions`)
-            
+
             // set the index/hashCode as (key,value) pair
             this.buckets[index] = arrOfObj
-
             arrOfObj.push({key,value})
 
             // increment the num of hash keys occupied in buckets array
@@ -84,6 +98,7 @@ class HashMap{
                 }
             }
         }
+
     }
 
     /**
@@ -130,6 +145,7 @@ class HashMap{
         console.log(`hash exists : ${hashExist}`)
 
         if(hashExist === true){
+
             let currentBucket = this.buckets[index]
             if(currentBucket === null) return false
     
@@ -139,6 +155,7 @@ class HashMap{
                     currentBucket.splice(i,1)
                 }
             }
+
             this.numOfHashKeys --
             return true
         }else{
@@ -203,9 +220,10 @@ bucketArr.set('lion', 'golden')
 
 
 // console.log(`AFTER REMOVAL`)
-console.log(bucketArr.buckets)
+// console.log(bucketArr.buckets)
 // console.log("Num of collisions: " + bucketArr.numOfCollisions)
-console.log(bucketArr.getLoadFactor())
+// console.log(bucketArr.getLoadFactor())
+console.log(bucketArr.keys())
 
 console.log(bucketArr.length())
 
