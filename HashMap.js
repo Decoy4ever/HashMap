@@ -40,14 +40,18 @@ class HashMap{
      * hash(key) = 10. Find the index 10 in the buckets array and store the key-value pair 
      */
 
+    checkErrorBounds(index){
+        if(index < 0 || index > bucketArr.length){
+            throw new Error(`trying to access index out of bounds`)
+        }  
+    }
+
     set(key,value){
  
         // find the hashCode
         let index = this.hash(key)
-        
-        if(index < 0 || index > bucketArr.length){
-            throw new Error(`trying to access index out of bounds`)
-        }        
+        this.checkErrorBounds(index)   
+
         console.log(`Inserting the "(key : ${key}, value: ${value})" at index : ${index}`)
 
         // create a array of (key,value) objects
@@ -94,35 +98,58 @@ class HashMap{
      * If a key is not found, return null
      */
     get(key){
-
         let index = this.hash(key)
+        this.checkErrorBounds(index)   
 
-        // if there is no hash code return null
-        if(!index){
-            return null
+        // if the bucket at the hashcode is empty/null return null
+        let currentBucket = this.buckets[index]
+        if(currentBucket === null) return null
+
+        let val = ""
+        // if key exists in the bucket i.e. arrOfKeyVal pairs return value assoicated with the key else return null
+        for(const pair of currentBucket){
+            val = pair.key === key ? pair.value : null
         }
 
-        for(let [hashcode,hashVal] of Object.entries(this.buckets)){
-
-            if(Number(hashcode) === index){
-                for(const [k,v] of Object.entries(hashVal)){
-                    console.log(v)
-                    if(v.key === key){
-                        return v.value
-                    }
-                }
-            }
-        }
+        return val
     }
 
     has(key){
-        // find the hash code/index in the buckets array
         let index = this.hash(key)
+        this.checkErrorBounds(index)
+        let currentBucket = this.buckets[index]
+        if(currentBucket === null) return null
 
-        // loop inside array[index] and find if key exists
-        for(const [k,v] of Object.entries(this.buckets[index])){
-            return v.key === key ? true : false
+        for(const pair of currentBucket){
+            return pair.key === key ? true : false
         }
+    }
+
+    remove(key){
+        // find the hash code assoicated with the key
+        // find the bucket using the hash code
+        // loop inside the array of objects in the bucket 
+        // find the key and remove using the splice(index of key to be deleted, deletecount = 1)
+        let index = this.hash(key)
+        this.checkErrorBounds(index)
+        let hashExist = this.has(key)
+        console.log(`hash exists : ${hashExist}`)
+
+        if(hashExist === true){
+            let currentBucket = this.buckets[index]
+            if(currentBucket === null) return false
+    
+            for(let i = 0; i < currentBucket.length; i++){
+                console.log(currentBucket[i].key)
+                if(currentBucket[i].key === key){
+                    currentBucket.splice(i,1)
+                }
+            }
+            return true
+        }else{
+            return false
+        }
+
     }
 
 }
@@ -137,9 +164,9 @@ bucketArr.set(`apple`,`blue`)
 
 
 // test 2 checking if a collision occurs and starts chaining objects 
-// bucketArr.set('elephant', 'gray')
-// bucketArr.set('raaS', 'purple')
-// bucketArr.set('elephant', 'gray')
+bucketArr.set('elephant', 'gray')
+bucketArr.set('raaS', 'purple')
+bucketArr.set('elephant', 'gray')
 
 
 // test 3 checking correctly adds new key,value to the bucket array
@@ -163,17 +190,27 @@ bucketArr.set(`apple`,`blue`)
 
 
 // test 5 checking if key exists using the `has(key)` 
-let has1 = bucketArr.has("apple")
-let has2 = bucketArr.has("pineapple")
+// let has1 = bucketArr.has("apple")
+// let has2 = bucketArr.has("pineapple")
 
-console.log(has1)
-console.log(has2)
+// console.log(has1)
+// console.log(has2)
 
-
-// console.log("Num of buckets occupied: " + bucketArr.numOfHashKeys)
-// console.log("Num of collisions: " + bucketArr.numOfCollisions)
-// console.log(bucketArr.getLoadFactor())
+console.log(`BEFORE REMOVAL`)
 console.log(bucketArr.buckets)
+
+// test 6 remove the key if it exists and return true
+let remove1 = bucketArr.remove("elephant")
+console.log(remove1)
+
+let remove2 = bucketArr.remove("dinosaur")
+console.log(remove2)
+
+
+console.log(`AFTER REMOVAL`)
+console.log(bucketArr.buckets)
+console.log("Num of collisions: " + bucketArr.numOfCollisions)
+console.log(bucketArr.getLoadFactor())
 
 
 
