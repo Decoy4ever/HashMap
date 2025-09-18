@@ -16,7 +16,10 @@ class HashMap{
         return this.numOfHashKeys / this.buckets.length
     }
 
-    // hash function converts the key into a hashCode 
+    length(){
+        return this.numOfHashKeys
+    }
+
     hash(key){
 
         let hashCode = 0
@@ -25,20 +28,11 @@ class HashMap{
         let primeNum = 31
 
         for(let i = 0; i < key.length; i++){
-            // console.log(hashCode)
             hashCode = (primeNum * hashCode + key.charCodeAt(i)) % this.size
         }
         console.log("---")
         return hashCode
     }
-
-    /**
-     * `set(key,value)` method creates a (key,value) pair in the buckets array
-     * key is passed into the hash function and returns a hashCode
-     * set the index of the buckets array to the hashCode
-     * For example, key = `apple`, value = `red`
-     * hash(key) = 10. Find the index 10 in the buckets array and store the key-value pair 
-     */
 
     checkErrorBounds(index){
         if(index < 0 || index > bucketArr.length){
@@ -84,6 +78,7 @@ class HashMap{
                 }else if(hashVal.key !== key && hashVal.value !== value){
                     this.numOfCollisions++
                     this.buckets[index].push({key,value})
+                    this.numOfHashKeys++
                 }else{
                     return;
                 }
@@ -110,7 +105,6 @@ class HashMap{
         for(const pair of currentBucket){
             val = pair.key === key ? pair.value : null
         }
-
         return val
     }
 
@@ -145,6 +139,7 @@ class HashMap{
                     currentBucket.splice(i,1)
                 }
             }
+            this.numOfHashKeys --
             return true
         }else{
             return false
@@ -170,16 +165,16 @@ bucketArr.set('elephant', 'gray')
 
 
 // test 3 checking correctly adds new key,value to the bucket array
-// bucketArr.set('banana', 'yellow')
-// bucketArr.set('carrot', 'orange')
-// bucketArr.set('dog', 'brown')
-// bucketArr.set('frog', 'green')
-// bucketArr.set('grape', 'purple')
-// bucketArr.set('hat', 'black')
-// bucketArr.set('ice cream', 'white')
-// bucketArr.set('jacket', 'blue')
-// bucketArr.set('kite', 'pink')
-// bucketArr.set('lion', 'golden')
+bucketArr.set('banana', 'yellow')
+bucketArr.set('carrot', 'orange')
+bucketArr.set('dog', 'brown')
+bucketArr.set('frog', 'green')
+bucketArr.set('grape', 'purple')
+bucketArr.set('hat', 'black')
+bucketArr.set('ice cream', 'white')
+bucketArr.set('jacket', 'blue')
+bucketArr.set('kite', 'pink')
+bucketArr.set('lion', 'golden')
 
 // test 4 checking if `get(key)` returns the value
 // let getVal = bucketArr.get("lina")
@@ -196,21 +191,23 @@ bucketArr.set('elephant', 'gray')
 // console.log(has1)
 // console.log(has2)
 
-console.log(`BEFORE REMOVAL`)
-console.log(bucketArr.buckets)
+// console.log(`BEFORE REMOVAL`)
+// console.log(bucketArr.buckets)
 
 // test 6 remove the key if it exists and return true
-let remove1 = bucketArr.remove("elephant")
-console.log(remove1)
+// let remove1 = bucketArr.remove("elephant")
+// console.log(remove1)
 
-let remove2 = bucketArr.remove("dinosaur")
-console.log(remove2)
+// let remove2 = bucketArr.remove("dinosaur")
+// console.log(remove2)
 
 
-console.log(`AFTER REMOVAL`)
+// console.log(`AFTER REMOVAL`)
 console.log(bucketArr.buckets)
-console.log("Num of collisions: " + bucketArr.numOfCollisions)
+// console.log("Num of collisions: " + bucketArr.numOfCollisions)
 console.log(bucketArr.getLoadFactor())
+
+console.log(bucketArr.length())
 
 
 
