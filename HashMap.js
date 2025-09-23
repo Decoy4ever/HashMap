@@ -7,17 +7,18 @@ class HashMap{
         // create an array of given size
         this.buckets = Array.from({length : this.size},() => null)
         this.numOfCollisions = 0
-        this.threshold = 0.75
+        this.loadFactor = 0.75
+
+        // keep track of the num of hash keys push into the hashMap
         this.numOfHashKeys = 0 
     }
     
-    getLoadFactor(){
-        // keep track of the number of entries in the buckets array divided by total size of the buckets array
-        return this.numOfHashKeys / this.buckets.length
+    getThreshold(){
+        return this.size * this.loadFactor
     }
 
     checkErrorBounds(index){
-        if(index < 0 || index > bucketArr.length){
+        if(index < 0 || index > this.buckets.length){
             throw new Error(`trying to access index out of bounds`)
         }  
     }
@@ -30,7 +31,7 @@ class HashMap{
         for(let i = 0; i < key.length; i++){
             hashCode = (primeNum * hashCode + key.charCodeAt(i)) % this.size
         }
-        console.log("---")
+        // console.log("---")
         return hashCode
     }
 
@@ -40,14 +41,14 @@ class HashMap{
         let index = this.hash(key)
 
         this.checkErrorBounds(index)   
-        console.log(`Inserting the "(key : ${key}, value: ${value})" at index : ${index}`)
+        // console.log(`Inserting the "(key : ${key}, value: ${value})" at index : ${index}`)
 
         // create a array of (key,value) objects
         let arrOfObj = []
         
         // if bucket at the index/hashCode is empty
         if(this.buckets[index] === null){
-            console.log(`No collisions`)
+            // console.log(`No collisions`)
 
             // set the index/hashCode as (key,value) pair
             this.buckets[index] = arrOfObj
@@ -57,11 +58,11 @@ class HashMap{
             this.numOfHashKeys++
 
             // update load factor
-            this.getLoadFactor()
+            this.getThreshold()
 
         // if the bucket at the index/hashCode is not empty 
         }else{
-            console.log(`Collision occurs at index: ${index}`)
+            // console.log(`Collision occurs at index: ${index}`)
             for(let [_,hashVal] of Object.entries(this.buckets[index])){
 
                 // current key is the same as the inserted new key update the value
@@ -70,13 +71,15 @@ class HashMap{
                     hashVal.value = value
                 }else if(hashVal.key !== key && hashVal.value !== value){
                     this.numOfCollisions++
-                    this.buckets[index].push({key,value})
                     this.numOfHashKeys++
+                    this.buckets[index].push({key,value})
                 }else{
                     return;
                 }
             }
         }
+
+        this.resize()
     }
 
     /**
@@ -113,10 +116,6 @@ class HashMap{
     }
 
     remove(key){
-        // find the hash code assoicated with the key
-        // find the bucket using the hash code
-        // loop inside the array of objects in the bucket 
-        // find the key and remove using the splice(index of key to be deleted, deletecount = 1)
         let index = this.hash(key)
         this.checkErrorBounds(index)
         let hashExist = this.has(key)
@@ -198,7 +197,31 @@ class HashMap{
         return arrOfHashes
     }
 
+    resize(){
+        
+        // find the current num of entries
+        console.log(`Num of entires`)
+        console.log(this.length())
+        console.log(`Current threshold`)
+        console.log(this.getThreshold())
 
+        if(this.length() > this.getThreshold()){
+            console.log(`Num of entires`)
+            console.log(this.length())
+            console.log(`Num of entires has surpassed threshold`)
+            this.size = this.size * 2
+            let tempArr = Array.from({length : this.size}, () => null)
+            this.buckets.concat(tempArr)
+
+            // update the threshold
+            console.log(`Updated threshold is now`)
+            this.getThreshold()
+
+            return this.buckets
+        }else{
+            return this.buckets
+        }
+    }
 }
 
 // create a hash table of size 10
@@ -226,7 +249,6 @@ bucketArr.set('hat', 'black')
 bucketArr.set('ice cream', 'white')
 bucketArr.set('jacket', 'blue')
 bucketArr.set('kite', 'pink')
-bucketArr.set('lion', 'golden')
 
 // test 4 checking if `get(key)` returns the value
 // let getVal = bucketArr.get("lina")
@@ -257,21 +279,22 @@ bucketArr.set('lion', 'golden')
 // console.log(`AFTER REMOVAL`)
 // console.log(bucketArr.buckets)
 // console.log("Num of collisions: " + bucketArr.numOfCollisions)
-// console.log(bucketArr.getLoadFactor())
-console.log(bucketArr.keys())
-console.log(bucketArr.values())
-console.log(bucketArr.length())
+// console.log(bucketArr.keys())
+// console.log(bucketArr.values())
+// console.log(bucketArr.length())
 // console.log(`Before Hash Map is cleared`)
-// console.log(bucketArr.buckets)
 // console.log(`After HashMap is cleared`)
-console.log(bucketArr.clear())
-console.log(bucketArr.entries())
+// console.log(bucketArr.clear())
+// console.log(bucketArr.entries())
 // console.log(`-----`)
 // console.log(bucketArr.buckets)
 
 // settu=ing new values in hashMap
 // bucketArr.set('banana', 'yellow')
 // console.log(bucketArr.buckets)
+console.log(bucketArr.set('lion', 'golden'))
+console.log(bucketArr.resize())
+
 
 
 
