@@ -77,7 +77,6 @@ class HashMap{
                 }
             }
         }
-
     }
 
     /**
@@ -179,15 +178,25 @@ class HashMap{
     }
 
     clear(){
-        
         for(let i = 0; i < this.buckets.length; i++){
             this.buckets[i] = null
         }
-
         return this.buckets
     }
 
 
+    entries(){
+        let currentBucketArr = this.buckets
+        let bucketHasHash = currentBucketArr.filter((obj) => obj !== null)
+        let arrOfHashes = []
+
+        for(let pair of bucketHasHash){
+            for(let keyVal of pair){
+                arrOfHashes.push(keyVal)
+            }
+        }
+        return arrOfHashes
+    }
 
 
 }
@@ -252,16 +261,18 @@ bucketArr.set('lion', 'golden')
 console.log(bucketArr.keys())
 console.log(bucketArr.values())
 console.log(bucketArr.length())
-console.log(`Before Hash Map is cleared`)
-console.log(bucketArr.buckets)
-console.log(`After HashMap is cleared`)
+// console.log(`Before Hash Map is cleared`)
+// console.log(bucketArr.buckets)
+// console.log(`After HashMap is cleared`)
 console.log(bucketArr.clear())
-console.log(`-----`)
-console.log(bucketArr.buckets)
+console.log(bucketArr.entries())
+// console.log(`-----`)
+// console.log(bucketArr.buckets)
 
 // settu=ing new values in hashMap
-bucketArr.set('banana', 'yellow')
-console.log(bucketArr.buckets)
+// bucketArr.set('banana', 'yellow')
+// console.log(bucketArr.buckets)
+
 
 
 
