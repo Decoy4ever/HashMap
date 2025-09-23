@@ -16,44 +16,13 @@ class HashMap{
         return this.numOfHashKeys / this.buckets.length
     }
 
-    length(){
-        return this.numOfHashKeys
-    }
-
-    keys(){
-        let currentBucketArr = this.buckets
-        let keyArr = []
-        
-        // remove all buckets that have null in the bucketArr
-        let bucketHasHash = currentBucketArr.filter((obj) => obj !== null)
-
-        // iterate through the buckets to find the hash keys
-        for(let bucket of bucketHasHash){
-            for(let obj of bucket){
-                keyArr.push(obj.key)
-            }
-        }
-        return keyArr
-    }
-
-    values(){
-        let currentBucketArr = this.buckets
-        let valueArr = []
-        
-        // remove all buckets that have null in the bucketArr
-        let bucketHasHash = currentBucketArr.filter((obj) => obj !== null)
-
-        // iterate through the buckets to find the hash keys
-        for(let bucket of bucketHasHash){
-            for(let obj of bucket){
-                valueArr.push(obj.value)
-            }
-        }
-        return valueArr 
+    checkErrorBounds(index){
+        if(index < 0 || index > bucketArr.length){
+            throw new Error(`trying to access index out of bounds`)
+        }  
     }
 
     hash(key){
-
         let hashCode = 0
         // primeNum use to avoid possible collisions
         let primeNum = 31
@@ -63,12 +32,6 @@ class HashMap{
         }
         console.log("---")
         return hashCode
-    }
-
-    checkErrorBounds(index){
-        if(index < 0 || index > bucketArr.length){
-            throw new Error(`trying to access index out of bounds`)
-        }  
     }
 
     set(key,value){
@@ -177,8 +140,55 @@ class HashMap{
         }else{
             return false
         }
-
     }
+
+    length(){
+        return this.numOfHashKeys
+    }
+
+    keys(){
+        let currentBucketArr = this.buckets
+        let keyArr = []
+        
+        // remove all buckets that have null in the bucketArr
+        let bucketHasHash = currentBucketArr.filter((obj) => obj !== null)
+
+        // iterate through the buckets to find the hash keys
+        for(let bucket of bucketHasHash){
+            for(let obj of bucket){
+                keyArr.push(obj.key)
+            }
+        }
+        return keyArr
+    }
+
+    values(){
+        let currentBucketArr = this.buckets
+        let valueArr = []
+        
+        // remove all buckets that have null in the bucketArr
+        let bucketHasHash = currentBucketArr.filter((obj) => obj !== null)
+
+        // iterate through the buckets to find the hash keys
+        for(let bucket of bucketHasHash){
+            for(let obj of bucket){
+                valueArr.push(obj.value)
+            }
+        }
+        return valueArr 
+    }
+
+    clear(){
+        
+        for(let i = 0; i < this.buckets.length; i++){
+            this.buckets[i] = null
+        }
+
+        return this.buckets
+    }
+
+
+
 
 }
 
@@ -241,9 +251,17 @@ bucketArr.set('lion', 'golden')
 // console.log(bucketArr.getLoadFactor())
 console.log(bucketArr.keys())
 console.log(bucketArr.values())
-
-
 console.log(bucketArr.length())
+console.log(`Before Hash Map is cleared`)
+console.log(bucketArr.buckets)
+console.log(`After HashMap is cleared`)
+console.log(bucketArr.clear())
+console.log(`-----`)
+console.log(bucketArr.buckets)
+
+// settu=ing new values in hashMap
+bucketArr.set('banana', 'yellow')
+console.log(bucketArr.buckets)
 
 
 
