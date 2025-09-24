@@ -60,7 +60,7 @@ class HashMap{
 
         // if the bucket at the index/hashCode is not empty 
         }else{
-
+            // handle collisions
             for(let pair of this.buckets[index]){
                 if(pair.key === key && pair.value !== value){
                     pair.value = value
@@ -73,20 +73,6 @@ class HashMap{
                 }
             }
 
-            // for(let [_,hashVal] of Object.entries(this.buckets[index])){
-
-            //     // current key is the same as the new key update the value
-            //     // if not push the (key,value) onto the bucket 
-            //     if(hashVal.key === key && hashVal.value !== value){
-            //         hashVal.value = value
-            //     }else if(hashVal.key !== key && hashVal.value !== value){
-            //         this.numOfCollisions++
-            //         this.numOfHashKeys++
-            //         this.buckets[index].push({key,value})
-            //     }else{
-            //         return;
-            //     }
-            // }
         }
 
         this.resize()
