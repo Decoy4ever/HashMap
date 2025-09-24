@@ -9,7 +9,7 @@ class HashMap{
         this.numOfCollisions = 0
         this.loadFactor = 0.75
 
-        // keep track of the num of hash keys push into the hashMap
+        // keep track of the num of hash keys in the hashMap
         this.numOfHashKeys = 0 
     }
     
@@ -23,32 +23,33 @@ class HashMap{
         }  
     }
 
+    /**
+     * `hash(key)` converts a key into a hash code
+     */
     hash(key){
         let hashCode = 0
+
         // primeNum use to avoid possible collisions
         let primeNum = 31
 
         for(let i = 0; i < key.length; i++){
             hashCode = (primeNum * hashCode + key.charCodeAt(i)) % this.size
         }
-        // console.log("---")
         return hashCode
     }
+
 
     set(key,value){
  
         // find the hashCode
         let index = this.hash(key)
-
         this.checkErrorBounds(index)   
-        // console.log(`Inserting the "(key : ${key}, value: ${value})" at index : ${index}`)
 
         // create a array of (key,value) objects
         let arrOfObj = []
         
         // if bucket at the index/hashCode is empty
         if(this.buckets[index] === null){
-            // console.log(`No collisions`)
 
             // set the index/hashCode as (key,value) pair
             this.buckets[index] = arrOfObj
@@ -57,16 +58,12 @@ class HashMap{
             // increment the num of hash keys occupied in buckets array
             this.numOfHashKeys++
 
-            // update load factor
-            this.getThreshold()
-
         // if the bucket at the index/hashCode is not empty 
         }else{
-            // console.log(`Collision occurs at index: ${index}`)
             for(let [_,hashVal] of Object.entries(this.buckets[index])){
 
-                // current key is the same as the inserted new key update the value
-                // if not push the (key,value) onto the array 
+                // current key is the same as the new key update the value
+                // if not push the (key,value) onto the bucket 
                 if(hashVal.key === key && hashVal.value !== value){
                     hashVal.value = value
                 }else if(hashVal.key !== key && hashVal.value !== value){
@@ -83,10 +80,8 @@ class HashMap{
     }
 
     /**
-     * `get(key)`
-     * takes one argument as a key and 
-     * returns the value that is assigned to this key. 
-     * If a key is not found, return null
+     * `get(key)` finds key in hash map and returns the value associated with the key.
+     * if kety does not exist return null
      */
     get(key){
         let index = this.hash(key)
@@ -104,6 +99,10 @@ class HashMap{
         return val
     }
 
+    /**
+     * `has(key)` finds if a key exists in the hash map. 
+     * Returns true if it exist else returns false
+     */
     has(key){
         let index = this.hash(key)
         this.checkErrorBounds(index)
@@ -115,14 +114,15 @@ class HashMap{
         }
     }
 
+    /**
+     * `remove(key)` removes that key in the hash map and returns true else returns false
+     */
     remove(key){
         let index = this.hash(key)
         this.checkErrorBounds(index)
         let hashExist = this.has(key)
-        console.log(`hash exists : ${hashExist}`)
 
         if(hashExist === true){
-
             let currentBucket = this.buckets[index]
             if(currentBucket === null) return false
     
@@ -132,7 +132,6 @@ class HashMap{
                     currentBucket.splice(i,1)
                 }
             }
-
             this.numOfHashKeys --
             return true
         }else{
@@ -140,15 +139,21 @@ class HashMap{
         }
     }
 
+    /**
+     * `length()` finds the total number of keys in the hashmap
+     */
     length(){
         return this.numOfHashKeys
     }
 
+    /**
+     * `keys()` returns all the keys in the hash map
+     */
     keys(){
-        let currentBucketArr = this.buckets
         let keyArr = []
+        let currentBucketArr = this.buckets
         
-        // remove all buckets that have null in the bucketArr
+        // filter the buckets array to only display buckets that have a value
         let bucketHasHash = currentBucketArr.filter((obj) => obj !== null)
 
         // iterate through the buckets to find the hash keys
@@ -160,14 +165,15 @@ class HashMap{
         return keyArr
     }
 
+    /**
+     * `values()` returns all the values in the hash map
+     */
     values(){
         let currentBucketArr = this.buckets
         let valueArr = []
         
-        // remove all buckets that have null in the bucketArr
         let bucketHasHash = currentBucketArr.filter((obj) => obj !== null)
 
-        // iterate through the buckets to find the hash keys
         for(let bucket of bucketHasHash){
             for(let obj of bucket){
                 valueArr.push(obj.value)
@@ -176,6 +182,9 @@ class HashMap{
         return valueArr 
     }
 
+    /**
+     *  Removes all entries/buckets in hash map
+     */
     clear(){
         for(let i = 0; i < this.buckets.length; i++){
             this.buckets[i] = null
@@ -183,7 +192,9 @@ class HashMap{
         return this.buckets
     }
 
-
+    /**
+     * `entries()` returns an array of (key,value) pairs
+     */
     entries(){
         let currentBucketArr = this.buckets
         let bucketHasHash = currentBucketArr.filter((obj) => obj !== null)
@@ -197,30 +208,29 @@ class HashMap{
         return arrOfHashes
     }
 
+    /**
+     * resize() will modify the number of buckets in the hashMap.
+     * If the number of buckets in current HashMap is greater than the threshold it will resize hashMap
+     * else return the existing hashMap
+     */
     resize(){
         
-        // find the current num of entries
-        console.log(`Num of entires`)
-        console.log(this.length())
-        console.log(`Current threshold`)
-        console.log(this.getThreshold())
+        let capacity = this.length()
+        let threshold = this.getThreshold()
 
-        if(this.length() > this.getThreshold()){
-            console.log(`Num of entires`)
-            console.log(this.length())
-            console.log(`Num of entires has surpassed threshold`)
+        if(capacity > threshold){
+
             this.size = this.size * 2
             let tempArr = Array.from({length : this.size}, () => null)
-            this.buckets.concat(tempArr)
 
+            // update the buckets array
+            this.buckets = this.buckets.concat(tempArr)
+            
             // update the threshold
-            console.log(`Updated threshold is now`)
             this.getThreshold()
 
-            return this.buckets
-        }else{
-            return this.buckets
         }
+        return this.buckets
     }
 }
 
@@ -229,14 +239,14 @@ let bucketArr = new HashMap()
 
 // test 1 updating the value if the two keys are the same
 bucketArr.set(`apple`,`green`)
-bucketArr.set(`apple`,`red`)
-bucketArr.set(`apple`,`blue`)
+// bucketArr.set(`apple`,`red`)
+// bucketArr.set(`apple`,`blue`)
 
 
 // test 2 checking if a collision occurs and starts chaining objects 
 bucketArr.set('elephant', 'gray')
 bucketArr.set('raaS', 'purple')
-bucketArr.set('elephant', 'gray')
+// bucketArr.set('elephant', 'gray')
 
 
 // test 3 checking correctly adds new key,value to the bucket array
@@ -290,10 +300,10 @@ bucketArr.set('kite', 'pink')
 // console.log(bucketArr.buckets)
 
 // settu=ing new values in hashMap
-// bucketArr.set('banana', 'yellow')
-// console.log(bucketArr.buckets)
-console.log(bucketArr.set('lion', 'golden'))
+bucketArr.set('lion', 'golden')
 console.log(bucketArr.resize())
+
+
 
 
 
