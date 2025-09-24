@@ -60,20 +60,33 @@ class HashMap{
 
         // if the bucket at the index/hashCode is not empty 
         }else{
-            for(let [_,hashVal] of Object.entries(this.buckets[index])){
 
-                // current key is the same as the new key update the value
-                // if not push the (key,value) onto the bucket 
-                if(hashVal.key === key && hashVal.value !== value){
-                    hashVal.value = value
-                }else if(hashVal.key !== key && hashVal.value !== value){
+            for(let pair of this.buckets[index]){
+                if(pair.key === key && pair.value !== value){
+                    pair.value = value
+                }else if(pair.key !== key && pair.value !== value){
                     this.numOfCollisions++
                     this.numOfHashKeys++
                     this.buckets[index].push({key,value})
                 }else{
-                    return;
+                    return
                 }
             }
+
+            // for(let [_,hashVal] of Object.entries(this.buckets[index])){
+
+            //     // current key is the same as the new key update the value
+            //     // if not push the (key,value) onto the bucket 
+            //     if(hashVal.key === key && hashVal.value !== value){
+            //         hashVal.value = value
+            //     }else if(hashVal.key !== key && hashVal.value !== value){
+            //         this.numOfCollisions++
+            //         this.numOfHashKeys++
+            //         this.buckets[index].push({key,value})
+            //     }else{
+            //         return;
+            //     }
+            // }
         }
 
         this.resize()
@@ -234,19 +247,19 @@ class HashMap{
     }
 }
 
-// create a hash table of size 10
+// create a hashMap
 let bucketArr = new HashMap()
 
-// test 1 updating the value if the two keys are the same
+// test 1 updating the value if the keys are the same
 bucketArr.set(`apple`,`green`)
-// bucketArr.set(`apple`,`red`)
-// bucketArr.set(`apple`,`blue`)
+bucketArr.set(`apple`,`red`)
+bucketArr.set(`apple`,`blue`)
 
 
-// test 2 checking if a collision occurs and starts chaining objects 
+// test 2 checking if a collision occurs 
 bucketArr.set('elephant', 'gray')
 bucketArr.set('raaS', 'purple')
-// bucketArr.set('elephant', 'gray')
+bucketArr.set('elephant', 'gray')
 
 
 // test 3 checking correctly adds new key,value to the bucket array
@@ -259,47 +272,57 @@ bucketArr.set('hat', 'black')
 bucketArr.set('ice cream', 'white')
 bucketArr.set('jacket', 'blue')
 bucketArr.set('kite', 'pink')
+console.log(bucketArr.buckets)
 
-// test 4 checking if `get(key)` returns the value
-// let getVal = bucketArr.get("lina")
-// console.log(`value is: ${getVal}`)
+// test 4 checking if `get(key)` returns a value or not
+let getVal = bucketArr.get("lina")
+console.log(`value is: ${getVal}`)
 // console.log(`\n`)
-// let getVal2 = bucketArr.get("raaS")
-// console.log(`value is: ${getVal2}`)
-
+let getVal2 = bucketArr.get("raaS")
+console.log(`value is: ${getVal2}`)
+console.log(`\n`)
 
 // test 5 checking if key exists using the `has(key)` 
-// let has1 = bucketArr.has("apple")
-// let has2 = bucketArr.has("pineapple")
+let has1 = bucketArr.has("apple")
+let has2 = bucketArr.has("pineapple")
 
-// console.log(has1)
-// console.log(has2)
+console.log(has1)
+console.log(has2)
+console.log(`\n`)
 
-// console.log(`BEFORE REMOVAL`)
-// console.log(bucketArr.buckets)
+console.log(`BEFORE REMOVAL`)
+console.log(bucketArr.buckets)
+
 
 // test 6 remove the key if it exists and return true
-// let remove1 = bucketArr.remove("elephant")
-// console.log(remove1)
+let remove1 = bucketArr.remove("elephant")
+console.log(`remove key possible : ${remove1}`)
+let remove2 = bucketArr.remove("dinosaur")
+console.log(`remove possible : ${remove2}`)
 
-// let remove2 = bucketArr.remove("dinosaur")
-// console.log(remove2)
+console.log(`\n`)
+console.log(`AFTER REMOVAL`)
+console.log(bucketArr.buckets)
 
+// Test to check if keys(), value(), length()
+console.log(bucketArr.keys())
+console.log(bucketArr.values())
+console.log(bucketArr.length())
+console.log(`\n`)
 
-// console.log(`AFTER REMOVAL`)
-// console.log(bucketArr.buckets)
-// console.log("Num of collisions: " + bucketArr.numOfCollisions)
-// console.log(bucketArr.keys())
-// console.log(bucketArr.values())
-// console.log(bucketArr.length())
+// Test checking to see if `clear()` clears all buckets to null
 // console.log(`Before Hash Map is cleared`)
+// console.log(bucketArr.buckets)
+// console.log(`\n`)
 // console.log(`After HashMap is cleared`)
 // console.log(bucketArr.clear())
-// console.log(bucketArr.entries())
-// console.log(`-----`)
 // console.log(bucketArr.buckets)
 
-// settu=ing new values in hashMap
+// Test to print out all the buckets
+console.log(bucketArr.entries())
+
+// Test to see if the `resize()`
+bucketArr.set('elephant', 'gray')
 bucketArr.set('lion', 'golden')
 console.log(bucketArr.resize())
 
