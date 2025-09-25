@@ -6,13 +6,13 @@ class HashMap{
 
         // create an array of given size
         this.buckets = Array.from({length : this.size},() => null)
-        this.numOfCollisions = 0
         this.loadFactor = 0.75
-
-        // keep track of the num of hash keys in the hashMap
-        this.numOfHashKeys = 0 
     }
     
+    /**
+     * `getThreshold()` calculate the threshold for current HashMap.
+     * The result value of the `getThreshold` and `length()` will determine the resizing of the HashMap.
+     */
     getThreshold(){
         return this.size * this.loadFactor
     }
@@ -55,9 +55,6 @@ class HashMap{
             this.buckets[index] = arrOfObj
             arrOfObj.push({key,value})
 
-            // increment the num of hash keys occupied in buckets array
-            this.numOfHashKeys++
-
         // if the bucket at the index/hashCode is not empty 
         }else{
             // handle collisions
@@ -65,16 +62,12 @@ class HashMap{
                 if(pair.key === key && pair.value !== value){
                     pair.value = value
                 }else if(pair.key !== key && pair.value !== value){
-                    this.numOfCollisions++
-                    this.numOfHashKeys++
                     this.buckets[index].push({key,value})
                 }else{
                     return
                 }
             }
-
         }
-
         this.resize()
     }
 
@@ -131,7 +124,6 @@ class HashMap{
                     currentBucket.splice(i,1)
                 }
             }
-            this.numOfHashKeys --
             return true
         }else{
             return false
@@ -142,7 +134,9 @@ class HashMap{
      * `length()` finds the total number of keys in the hashmap
      */
     length(){
-        return this.numOfHashKeys
+        let currentHashMap = this.buckets
+
+        return currentHashMap.flat().filter((el) => el !== null).length        
     }
 
     /**
@@ -165,7 +159,7 @@ class HashMap{
     }
 
     /**
-     * `values()` returns all the values in the hash map
+     * `values()` returns all the values in the current hash map
      */
     values(){
         let currentBucketArr = this.buckets
@@ -182,7 +176,7 @@ class HashMap{
     }
 
     /**
-     *  Removes all entries/buckets in hash map
+     *  Removes all entries/buckets in hash map 
      */
     clear(){
         for(let i = 0; i < this.buckets.length; i++){
@@ -216,25 +210,32 @@ class HashMap{
         
         let capacity = this.length()
         let threshold = this.getThreshold()
-
+        let prevHashMap = this.buckets.flat().filter((el) => el !== null)
+        // console.log(prevHashMap)
+        
         if(capacity > threshold){
+            this.size = 2 * this.size
+            console.log(this.size)
 
-            this.size = this.size * 2
-            let tempArr = Array.from({length : this.size}, () => null)
-
-            // update the buckets array
-            this.buckets = this.buckets.concat(tempArr)
+            // reize the bucket array
+            this.buckets = Array.from({length : this.size},() => null)
+            
+            // rehash the (key,value) for the updated HashMap
+            prevHashMap.forEach((el) => {
+                this.set(el.key, el.value)
+            })
             
             // update the threshold
             this.getThreshold()
 
+            return this.buckets
         }
-        return this.buckets
     }
 }
 
+
 // create a hashMap
-let bucketArr = new HashMap()
+const bucketArr = new HashMap()
 
 // test 1 updating the value if the keys are the same
 bucketArr.set(`apple`,`green`)
@@ -258,43 +259,44 @@ bucketArr.set('hat', 'black')
 bucketArr.set('ice cream', 'white')
 bucketArr.set('jacket', 'blue')
 bucketArr.set('kite', 'pink')
-console.log(bucketArr.buckets)
+// console.log(bucketArr.buckets)
+// console.log(bucketArr.length())
 
-// test 4 checking if `get(key)` returns a value or not
-let getVal = bucketArr.get("lina")
-console.log(`value is: ${getVal}`)
+// // test 4 checking if `get(key)` returns a value or not
+// let getVal = bucketArr.get("lina")
+// console.log(`value is: ${getVal}`)
+// // console.log(`\n`)
+// let getVal2 = bucketArr.get("raaS")
+// console.log(`value is: ${getVal2}`)
 // console.log(`\n`)
-let getVal2 = bucketArr.get("raaS")
-console.log(`value is: ${getVal2}`)
-console.log(`\n`)
 
-// test 5 checking if key exists using the `has(key)` 
-let has1 = bucketArr.has("apple")
-let has2 = bucketArr.has("pineapple")
+// // test 5 checking if key exists using the `has(key)` 
+// let has1 = bucketArr.has("apple")
+// let has2 = bucketArr.has("pineapple")
 
-console.log(has1)
-console.log(has2)
-console.log(`\n`)
+// console.log(has1)
+// console.log(has2)
+// console.log(`\n`)
 
-console.log(`BEFORE REMOVAL`)
-console.log(bucketArr.buckets)
+// console.log(`BEFORE REMOVAL`)
+// console.log(bucketArr.buckets)
 
 
-// test 6 remove the key if it exists and return true
-let remove1 = bucketArr.remove("elephant")
-console.log(`remove key possible : ${remove1}`)
-let remove2 = bucketArr.remove("dinosaur")
-console.log(`remove possible : ${remove2}`)
+// // test 6 remove the key if it exists and return true
+// let remove1 = bucketArr.remove("elephant")
+// console.log(`remove key possible : ${remove1}`)
+// let remove2 = bucketArr.remove("dinosaur")
+// console.log(`remove possible : ${remove2}`)
 
-console.log(`\n`)
-console.log(`AFTER REMOVAL`)
-console.log(bucketArr.buckets)
+// console.log(`\n`)
+// console.log(`AFTER REMOVAL`)
+// console.log(bucketArr.buckets)
 
-// Test to check if keys(), value(), length()
-console.log(bucketArr.keys())
-console.log(bucketArr.values())
-console.log(bucketArr.length())
-console.log(`\n`)
+// // Test to check if keys(), value(), length()
+// console.log(bucketArr.keys())
+// console.log(bucketArr.values())
+// console.log(bucketArr.length())
+// console.log(`\n`)
 
 // Test checking to see if `clear()` clears all buckets to null
 // console.log(`Before Hash Map is cleared`)
@@ -305,12 +307,29 @@ console.log(`\n`)
 // console.log(bucketArr.buckets)
 
 // Test to print out all the buckets
-console.log(bucketArr.entries())
+// console.log(bucketArr.entries())
+
+
+console.log(`Previous Hash Map`)
+console.log(bucketArr.buckets)
+console.log("num of hash keys in HashMap: " + bucketArr.length())
+console.log("threshold: " + bucketArr.getThreshold())
+console.log(`\n`)
 
 // Test to see if the `resize()`
-bucketArr.set('elephant', 'gray')
+console.log(`Updated Hash Map`)
 bucketArr.set('lion', 'golden')
+// console.log(bucketArr.buckets)
+console.log("num of hash: " + bucketArr.length())
 console.log(bucketArr.resize())
+
+bucketArr.set('moon', 'silver')
+console.log(bucketArr.buckets)
+console.log("num of hash: " + bucketArr.length())
+console.log("threshold: " + bucketArr.getThreshold())
+
+
+
 
 
 
